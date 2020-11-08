@@ -44,7 +44,7 @@ const addCustomerToWaitlist = async (reservationObj) => {
 				data: waitlist[0].reservation,
       };
 
-      
+
       return await updateWaitlistById(waitlist[0]._id, updatePayload);
     }
     
@@ -117,6 +117,13 @@ const getReservationsById = async (id, columnName) => {
   return reservation;
 }
 
+const getAllFromWaitlist = async () => {
+  return await Waitlist.find({}).exec().catch(err => {
+    console.log(err);
+    return err;
+  })
+}
+
 module.exports = {
 	makeCustomerReservation,
 	addCustomerToWaitlist,
@@ -126,4 +133,5 @@ module.exports = {
 	findTableById,
 	getReservationsById,
 	updateWaitlistById,
+	getAllFromWaitlist,
 };

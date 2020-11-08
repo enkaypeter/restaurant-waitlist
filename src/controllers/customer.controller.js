@@ -40,7 +40,6 @@ module.exports = {
 		const newCustomer = new Customers(bioData);
 
 		const saveResponse = await newCustomer.save().catch((err) => {
-			response.statusCode = 400;
 			response.error = err;
 			console.log(err);
 		});
@@ -71,7 +70,6 @@ module.exports = {
 				response.statusCode = 200;
 				response.error == "" ? delete response.error : response.error;
 			} catch (error) {
-				response.statusCode = 400;
 				response.error = error;
 			}
 		}
@@ -112,7 +110,6 @@ module.exports = {
 			response.statusCode = 200;
 			response.error == "" ? delete response.error : response.error;
 		} catch (error) {
-			response.statusCode = 400;
 			response.error = error;
 		}
 
@@ -152,7 +149,6 @@ module.exports = {
 			response.statusCode = 200;
 			response.error == "" ? delete response.error : response.error;
 		} catch (error) {
-			response.statusCode = 400;
 			response.error = error;
 		}
 
@@ -195,7 +191,6 @@ module.exports = {
 			response.statusCode = 200;
 			response.error == "" ? delete response.error : response.error;			
 		} catch (error) {
-			response.statusCode = 400;
 			response.error = error;	
 		}
 
@@ -238,10 +233,11 @@ module.exports = {
 			response.statusCode = 200;
 			response.error == "" ? delete response.error : response.error;			
 		} catch (error) {
-			response.statusCode = 400;
 			response.error = error;	
 		}
 		
 		return res.status(response.statusCode).json(response);
-	}
+	},
+
+
 };
