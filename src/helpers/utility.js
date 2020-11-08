@@ -63,7 +63,7 @@ const promoteCustomer = (waitlistResponse, reservation_id) => {
     return customer;
   });
 
-  // join old list with new list with current customer on top
+  // join old list and new list with current customer on top
   newReservation = newReservation.concat(reservation);
   return newReservation;
 
@@ -80,7 +80,7 @@ const delayCustomer = (waitlistResponse, reservation_id) => {
     }
   }
 
-  if (reservation[indexOf].priority == 1) {
+  if (reservation.length == 1) {
     return reservation; // return reservations as it is if customer is already top of list
   }
 
@@ -98,6 +98,41 @@ const delayCustomer = (waitlistResponse, reservation_id) => {
 
 };
 
+const demoteCustomer = (waitlistResponse, reservation_id) => {
+  let { reservation } = waitlistResponse[0];
+  
+	let newReservation = [];
+
+	let indexOf;
+
+	for (let i = 0; i < reservation.length; i++) {
+		if (reservation[i].id == reservation_id) {
+			indexOf = i;
+		}
+	}
+
+	if (reservation.length == 1) {
+		return reservation; // return reservations as it is if customer is already top of list
+	}
+
+	//assign customer least priority
+	reservation[indexOf].priority = reservation.length;
+	newReservation[0] = reservation[indexOf];
+
+	// remove current customer from position on the list
+	reservation.splice(indexOf, 1);
+
+	// reset customer priorities
+	reservation = reservation.map((customer) => {
+		customer.priority -= 1;
+		return customer;
+	});
+
+	// join old list and new list with current customer at the rear
+  newReservation = reservation.concat(newReservation);
+	return newReservation;
+};
+
 //WIP
 const swap = (arr, current, incoming) => {
   let temp = current;
@@ -109,4 +144,5 @@ module.exports = {
 	bumpCustomer,
 	promoteCustomer,
 	delayCustomer,
+	demoteCustomer,
 };
