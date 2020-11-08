@@ -7,12 +7,10 @@ const SCHEMA = new mongoose.Schema(
 			ref: "Tables",
 		},
 
-		reservation: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "Reservations",
-			},
-		],
+		reservation: {
+			type: Array,
+			required: true
+		}
 	},
 	{ timestamps: true }
 );

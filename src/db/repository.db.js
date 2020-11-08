@@ -1,4 +1,7 @@
-const { Customers, Reservations, Waitlist } = require("../models");
+const { Customers, Reservations, Waitlist, Tables } = require("../models");
+
+const { prioritise } = require("../helpers/max_heap.queue");
+
 const makeCustomerReservation = async (payload) => {
   payload.arrival_time = Date.now();
   payload.complete_time = "";
@@ -23,13 +26,32 @@ const addCustomerToWaitlist = async (reservationObj) => {
       return err;
     });
 
-		if (waitlist !== []) {
-			//await updateWaitlist(waitlist, reservationObj);
-		}
+  
+    if (waitlist.length > 0) {
+      let lastCustomerPriority =
+      waitlist[0].reservation[waitlist[0].reservation.length - 1].priority;
+      let incomingCustomerPriority = lastCustomerPriority += 1;
+  
+      let newWaitlistPayload = {
+				id: reservationObj.id,
+				priority: incomingCustomerPriority,
+			};
+  
+      waitlist[0].reservation.push(newWaitlistPayload);
+
+      let updatePayload = {
+				column: "reservation",
+				data: waitlist[0].reservation,
+      };
+
+      
+      return await updateWaitlistById(waitlist[0]._id, updatePayload);
+    }
+    
 
 		const waitlistPayload = {
 			table: reservationObj.table,
-			reservation: [reservationObj.id],
+      reservation: [{ id: reservationObj.id, priority: 1 }],
 		};
 
     const newWaitlist = new Waitlist(waitlistPayload);
@@ -38,7 +60,7 @@ const addCustomerToWaitlist = async (reservationObj) => {
       return err;
     });
 
-    return waitlistResponse
+    return waitlistResponse;
 	}
 
 }
@@ -51,12 +73,45 @@ const getWaitlist = async (tableRef) => {
 
 }
 
-const updateWaitlist = async (waitlistObj, reservationObj) => {
-  // WIP
+const getAllTables = async () => {
+  return await Tables.find({}).exec().catch(err => {
+    console.log(err);
+    return err;
+  })
+};
+
+const findTableById = async (tableId) => {
+  return await Tables.findById(tableId).exec().catch(err => {
+    console.log(err);
+    return err;
+  });
+}
+
+const updateTableStatus = async (id, status) => {
+  const filter = { _id: id };
+  const update = { status: status };
+  return await Tables.findOneAndUpdate(filter, update, { new: true }).catch(err => {
+    console.log(err);
+    return err;
+  })
+}
+
+const updateWaitlistById = async (id, payload) => {
+  const filter = { _id: id };
+  const { column, data } = payload;
+  const update = { [column]: data };
+
+  return await Waitlist.findOneAndUpdate(filter, update, { new: true }).catch(err => {
+    console.log(err);
+    return err;
+  })
 }
 
 module.exports = {
 	makeCustomerReservation,
-  addCustomerToWaitlist,
-  getWaitlist
+	addCustomerToWaitlist,
+	getWaitlist,
+	getAllTables,
+	updateTableStatus,
+	findTableById,
 };
