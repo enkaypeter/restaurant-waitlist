@@ -9,7 +9,11 @@ const {
 	getReservationsById,
 	updateWaitlistById,
 } = require("../db/repository.db");
-const { randomNumberGenerator, promoteCustomer } = require("../helpers/utility");
+const {
+	randomNumberGenerator,
+	promoteCustomer,
+	bumpCustomer,
+} = require("../helpers/utility");
 module.exports = {
 	add: async (req, res) => {
 		let response = {
@@ -115,5 +119,47 @@ module.exports = {
 
 		return res.status(response.statusCode).json(response);
 
+	},
+
+	bump: async (req, res) => {
+		let response = {
+			success: false,
+			statusCode: 400,
+			error: "",
+		};
+
+		const { customer_id } = req.params;
+		try {
+			let reservationResponse = await getReservationsById(
+				customer_id,
+				"customer"
+			);
+			let waitlistResponse = await getWaitlist(reservationResponse.table);
+			let promotedCustomer = bumpCustomer(
+				waitlistResponse,
+				reservationResponse._id
+			);
+			let payload = {
+				column: "reservation",
+				data: promotedCustomer,
+			};
+			
+			let updateWaitlistResponse = await updateWaitlistById(
+				waitlistResponse[0].id,
+				payload
+			);
+
+			response.data = updateWaitlistResponse;
+			response.success = true;
+			response.message = "Customer Bumped Successfully";
+			response.statusCode = 200;
+			response.error == "" ? delete response.error : response.error;
+		} catch (error) {
+			response.statusCode = 400;
+			response.error = error;
+		}
+
+		return res.status(response.statusCode).json(response);
+		
 	}
 };

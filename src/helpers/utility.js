@@ -2,17 +2,33 @@ const randomNumberGenerator = (max) => {
   return Math.floor(Math.random() * Math.floor(max));
 };
 
-const reprioritise = (waitlistResponse, customer_id) => {
-  const { reservation } = waitlistResponse;
+const bumpCustomer = (waitlistResponse, reservation_id) => {
+  const { reservation } = waitlistResponse[0];
+
+  let indexOf;
 
   for (let i = 0; i < reservation.length; i++) {
-    if (customer_id == reservation[i].id) {
-      let incoming =  i;
-      let current = reservation[i - 1].priority;
-      swap(reservation, current, incoming);
+    if (reservation[i].id == reservation_id) {
+      indexOf = i;
     }
   }
 
+  if (reservation[indexOf].priority == 1) {
+    return reservation; // return reservations as it is if customer is already top of list
+  }
+
+
+  //swap priorities
+  reservation[indexOf - 1].priority += 1;
+  reservation[indexOf].priority -= 1;
+
+  //swap postions
+  let temp = reservation[indexOf - 1];
+  reservation[indexOf - 1] = reservation[indexOf];
+  reservation[indexOf] = temp;
+
+  return reservation;
+ 
 };
 
 
@@ -61,6 +77,6 @@ const swap = (arr, current, incoming) => {
 
 module.exports = {
 	randomNumberGenerator,
-	reprioritise,
+	bumpCustomer,
 	promoteCustomer,
 };
