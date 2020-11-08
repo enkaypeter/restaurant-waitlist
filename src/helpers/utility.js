@@ -69,6 +69,35 @@ const promoteCustomer = (waitlistResponse, reservation_id) => {
 
 }
 
+const delayCustomer = (waitlistResponse, reservation_id) => {
+  let { reservation } = waitlistResponse[0];
+
+  let indexOf;
+
+  for (let i = 0; i < reservation.length; i++) {
+    if (reservation[i].id == reservation_id) {
+      indexOf = i;
+    }
+  }
+
+  if (reservation[indexOf].priority == 1) {
+    return reservation; // return reservations as it is if customer is already top of list
+  }
+
+  //swap priorities
+  reservation[indexOf + 1].priority -= 1;
+  reservation[indexOf].priority += 1;
+
+  //swap postions
+  let temp = reservation[indexOf + 1];
+  reservation[indexOf + 1] = reservation[indexOf];
+  reservation[indexOf] = temp;
+
+
+  return reservation;
+
+};
+
 //WIP
 const swap = (arr, current, incoming) => {
   let temp = current;
@@ -79,4 +108,5 @@ module.exports = {
 	randomNumberGenerator,
 	bumpCustomer,
 	promoteCustomer,
+	delayCustomer,
 };
