@@ -26,7 +26,7 @@ const addCustomerToWaitlist = async (reservationObj) => {
       return err;
     });
 
-  
+    
     if (waitlist.length > 0) {
       let lastCustomerPriority =
       waitlist[0].reservation[waitlist[0].reservation.length - 1].priority;
@@ -107,6 +107,16 @@ const updateWaitlistById = async (id, payload) => {
   })
 }
 
+const getReservationsById = async (id, columnName) => {
+  let reservationResponse = await Reservations.find({ [columnName]: id }).exec().catch(err => {
+    console.log(err);
+    return err;
+  });
+
+  const [reservation] = reservationResponse;
+  return reservation;
+}
+
 module.exports = {
 	makeCustomerReservation,
 	addCustomerToWaitlist,
@@ -114,4 +124,6 @@ module.exports = {
 	getAllTables,
 	updateTableStatus,
 	findTableById,
+	getReservationsById,
+	updateWaitlistById,
 };

@@ -6,8 +6,10 @@ const {
 	getAllTables,
 	updateTableStatus,
 	findTableById,
+	getReservationsById,
+	updateWaitlistById,
 } = require("../db/repository.db");
-const { randomNumberGenerator } = require("../helpers/utility");
+const { randomNumberGenerator, promoteCustomer } = require("../helpers/utility");
 module.exports = {
 	add: async (req, res) => {
 		let response = {
@@ -52,6 +54,7 @@ module.exports = {
       try {
 				let reservationResponse = await makeCustomerReservation(reservationPayload);
 				let tableResponse = await findTableById(table);
+
 				if (tableResponse.status !== "empty") {
 					await addCustomerToWaitlist(reservationResponse);
 				}
@@ -72,4 +75,45 @@ module.exports = {
 
 		return res.status(response.statusCode).json(response);
 	},
+
+	promote: async (req, res) => {
+		let response = {
+			success: false,
+			statusCode: 400,
+			error: "",
+		};
+
+		const { customer_id } = req.params;
+		try {
+			let reservationResponse = await getReservationsById(
+				customer_id,
+				"customer"
+			);
+			let waitlistResponse = await getWaitlist(reservationResponse.table);
+			let promotedCustomer = promoteCustomer(
+				waitlistResponse,
+				reservationResponse._id
+			);
+			let payload = {
+				column: "reservation",
+				data: promotedCustomer,
+			};
+
+			let updateWaitlistResponse = await updateWaitlistById(
+				waitlistResponse[0].id,
+				payload
+			);
+			response.data = updateWaitlistResponse;
+			response.success = true;
+			response.message = "Customer Promoted Successfully";
+			response.statusCode = 200;
+			response.error == "" ? delete response.error : response.error;
+		} catch (error) {
+			response.statusCode = 400;
+			response.error = error;
+		}
+
+		return res.status(response.statusCode).json(response);
+
+	}
 };
