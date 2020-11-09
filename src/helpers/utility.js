@@ -135,6 +135,8 @@ const demoteCustomer = (waitlistResponse, reservation_id) => {
 
 const removeReservation = (waitlistResponse, reservation_id) => {
   let { reservation } = waitlistResponse;
+  console.log("Before-->")
+  console.log(reservation);
 
   let indexOf;
 
@@ -163,6 +165,7 @@ const removeReservation = (waitlistResponse, reservation_id) => {
 			}
     }
   }
+
 
   return reservation;
 

@@ -130,5 +130,78 @@ module.exports = {
 
 		return res.status(response.statusCode).json(response);
 
-  }
+  },
+
+  editById: async (req, res) => {
+		let response = {
+			success: false,
+			statusCode: 400,
+			error: "",
+		};
+
+		const { waitlist_id, reservation_id } = req.params;
+
+		let [waitlistResponse] = await getWaitlistById({ _id: waitlist_id });
+
+		if (waitlistResponse == undefined) {
+			response.error = "Waitlist doesn't exist";
+			return res.status(response.statusCode).json(response);
+		}
+
+		let findReservationResponse = waitlistResponse.reservation.find(
+			(rsvp) => rsvp.id == reservation_id
+		);
+
+		if (findReservationResponse == undefined) {
+			response.error = "Reservation doesn't exist in sepecified waitlist";
+			return res.status(response.statusCode).json(response);
+    }
+
+    try {
+      let reservationPayload = {
+        column: "complete_time",
+        data: Date.now(),
+      };
+      
+      //mark reservation as complete
+      await updateReservationById(
+        findReservationResponse.id,
+        reservationPayload
+      );
+
+      // remove reservation from waitlist
+      let removeReservationResponse = removeReservation(
+        waitlistResponse,
+        reservation_id
+      );
+
+      if (removeReservationResponse.length == 0) {
+        await updateTableStatus(table, "empty");
+      };
+
+      let waitlistPayload = {
+        column: "reservation",
+        data: removeReservationResponse,
+      };
+
+      //update waitlist with new reservation
+      let updateWaitlistResponse = await updateWaitlistById(
+        waitlistResponse.id,
+        waitlistPayload
+      );
+  
+      response.message = "Reservation completed successfully";
+      response.data = updateWaitlistResponse;
+      response.success = true;
+      response.statusCode = 200;
+      response.error == "" ? delete response.error : response.error;            
+    } catch (error) {
+      response.error = error;
+      console.log(error);
+    }
+
+    return res.status(response.statusCode).json(response);
+    
+	}
+
 };
