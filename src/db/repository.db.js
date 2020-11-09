@@ -142,6 +142,19 @@ const getCustomerById = async (id, columnName) => {
   return customerResponse;
 }
 
+const updateReservationById = async (id, payload) => {
+	const filter = { _id: id };
+	const { column, data } = payload;
+	const update = { [column]: data };
+
+	return await Reservations.findOneAndUpdate(filter, update, {
+		new: true,
+	}).catch((err) => {
+		console.log(err);
+		return err;
+	});
+};
+
 module.exports = {
 	makeCustomerReservation,
 	addCustomerToWaitlist,
@@ -154,4 +167,5 @@ module.exports = {
 	updateWaitlistById,
 	getAllFromWaitlist,
 	getCustomerById,
+	updateReservationById,
 };

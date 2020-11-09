@@ -133,6 +133,41 @@ const demoteCustomer = (waitlistResponse, reservation_id) => {
 	return newReservation;
 };
 
+const removeReservation = (waitlistResponse, reservation_id) => {
+  let { reservation } = waitlistResponse;
+
+  let indexOf;
+
+  for (let i = 0; i < reservation.length; i++) {
+    if (reservation[i].id == reservation_id) {
+      indexOf = i;
+    }
+  }
+
+  // return reservation if item is the last on the list
+  if (indexOf == (reservation.length - 1)) {
+    reservation.splice(indexOf, 1); // if reservation is empty update table status to empty
+    return reservation;
+  }
+
+  reservation.splice(indexOf, 1);
+
+  if (reservation.length == 0) {
+    return reservation;
+  }
+
+  for (let i = 0; i < reservation.length; i++){
+    if (i + 1 !== reservation.length) {
+			if (reservation[i].priority + 1 !== reservation[i + 1].priority) {
+				reservation[i + 1].priority = reservation[i].priority + 1;
+			}
+    }
+  }
+
+  return reservation;
+
+};
+
 //WIP
 const swap = (arr, current, incoming) => {
   let temp = current;
@@ -145,4 +180,5 @@ module.exports = {
 	promoteCustomer,
 	delayCustomer,
 	demoteCustomer,
+	removeReservation,
 };
