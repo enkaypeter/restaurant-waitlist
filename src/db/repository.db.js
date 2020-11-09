@@ -73,6 +73,13 @@ const getWaitlist = async (tableRef) => {
 
 }
 
+const getWaitlistById = async (filter) => {
+  return await Waitlist.find(filter).exec().catch(err => {
+    console.log(err);
+    return err;
+  })
+}
+
 const getAllTables = async () => {
   return await Tables.find({}).exec().catch(err => {
     console.log(err);
@@ -124,14 +131,27 @@ const getAllFromWaitlist = async () => {
   })
 }
 
+const getCustomerById = async (id, columnName) => {
+  let getCustomerResponse = await Customers.find({ [columnName]: id }).exec().catch(err => {
+    console.log(err);
+    return err;
+  });
+
+  const [customerResponse] = getCustomerResponse;
+  console.log(customerResponse);
+  return customerResponse;
+}
+
 module.exports = {
 	makeCustomerReservation,
 	addCustomerToWaitlist,
 	getWaitlist,
+	getWaitlistById,
 	getAllTables,
 	updateTableStatus,
 	findTableById,
 	getReservationsById,
 	updateWaitlistById,
 	getAllFromWaitlist,
+	getCustomerById,
 };
