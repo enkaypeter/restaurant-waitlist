@@ -23,9 +23,10 @@ module.exports = {
 			statusCode: 400,
 			error: "",
 		};
-		const { first_name, last_name, phone, size, table } = req.body;
-		const bioData = { first_name, last_name, phone };
-		
+
+		const { first_name, last_name, phone, size, table, staff } = req.body;
+		const bioData = { first_name, last_name, phone, staff };
+
 		const newCustomer = new Customers(bioData);
 
 		const saveResponse = await newCustomer.save().catch((err) => {
@@ -36,7 +37,7 @@ module.exports = {
 		if (saveResponse !== undefined) {
 			const reservationPayload = {
 				customer: saveResponse.id,
-				staff: "5fa2c2a1f12dfaacb0023a2c",
+				staff,
 				table,
 				size,
 			};
