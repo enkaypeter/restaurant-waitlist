@@ -45,9 +45,5 @@ describe("Customer Test", () => {
     expect(staff).not.toBeNull();
     expect(table).not.toBeNull();
 
-    makeCustomerReservation
-
-
-
 	});
 });
