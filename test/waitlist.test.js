@@ -1,11 +1,5 @@
 const DB = require("./partials/db");
-const mongoose = require("mongoose");
-const request = require("supertest");
-
-const { Waitlist } = require("../src/models");
 const { getAllFromWaitlist } = require("../src/db/repository.db");
-
-// const app = require("../src/app");
 
 /**
  * Connect to a new in-memory database before running any tests.
