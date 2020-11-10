@@ -1,23 +1,14 @@
 const DB = require("./partials/db");
-const mongoose = require("mongoose");
-const { Waitlist, Tables, Staff, Customers } = require("../src/models");
+const { Tables, Staff, Customers } = require("../src/models");
 const {
-	getWaitlistById,
-	getWaitlist,
 	makeCustomerReservation,
 	addCustomerToWaitlist,
-	findTableById,
 	updateWaitlistById,
 } = require("../src/db/repository.db");
 const {
 	customerOne,
-	customerTwo,
-	customerThree,
 	staffOne,
 	tableOne,
-	tableTwo,
-	tableThree,
-	reservationOne,
 	waitlistOne,
 } = require("./partials/data");
 
@@ -47,7 +38,7 @@ afterEach(async () => await DB.clearDatabase());
 afterAll(async () => await DB.closeDatabase());
 
 describe("Customer Test", () => {
-	test("Save customer and create a reservation", async () => {
+	test("Save customer, create a reservation, promote, demote and delay customer", async () => {
 		/*
 		 * Seed Staff, Tables and Customers
 		 */
