@@ -1,5 +1,5 @@
 const DB = require("./partials/db");
-const { Tables, Staff, Customers } = require("../src/models");
+const { Tables, Staff, Customers, Reservations } = require("../src/models");
 const {
 	makeCustomerReservation,
 	addCustomerToWaitlist,
@@ -10,12 +10,14 @@ const {
 	staffOne,
 	tableOne,
 	waitlistOne,
+	reservationOne,
 } = require("./partials/data");
 
 const {
 	promoteCustomer,
 	demoteCustomer,
 	delayCustomer,
+	bumpCustomer
 } = require("../src/helpers/utility");
 
 
@@ -123,27 +125,25 @@ describe("Customer Test", () => {
 			);
     }).not.toThrow();
 
-	});
+    /**
+     * Should  be able to bump a customer
+     */
+    expect(async () => {
+      let bumpedCustomer = bumpCustomer(
+				[waitlistOne],
+				waitlistOne.reservation[0].id
+			);
 
-	/**
-	 * Staff should exist after being created.
-	 */
-	it("Staff exists after being created", async () => {
-		let newStaff = new Staff(staffOne);
-		const staff = await newStaff.save();
+      let payload = {
+				column: "reservation",
+				data: bumpedCustomer,
+			};
 
-		const findResponse = await Staff.findOne();
-		expect(findResponse.name).toBe(staff.name);
-	});
+      return await updateWaitlistById(
+				waitlistOne._id,
+				payload
+			);
+    }).not.toThrow();
 
-	/**
-	 * Tables should exist after being created.
-	 */
-	it("Table exists after being created", async () => {
-		let newTable = new Tables(tableOne);
-		const table = await newTable.save();
-
-		const findResponse = await Tables.findOne();
-		expect(findResponse.type).toBe(table.type);
 	});
 });

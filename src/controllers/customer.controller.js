@@ -39,7 +39,7 @@ module.exports = {
 				if (table == undefined) {
 					// Find first available table is no table is specified 
 					const allTables = await getAllTables();
-					const emptyTable = allTables.find(tables => tables.status == "occupied");
+					const emptyTable = allTables.find(tables => tables.status == "empty");
 					if (emptyTable == undefined) {
 						for (let i = 0; i < allTables.length; i++){
 							const singleTable = allTables[i].capacity.split("-");
