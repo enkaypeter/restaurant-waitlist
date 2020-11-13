@@ -172,12 +172,14 @@ const removeReservation = (waitlistResponse, reservation_id) => {
 			if (reservation[i].priority + 1 !== reservation[i + 1].priority) {
         reservation[i + 1].priority = reservation[i].priority + 1;
         continue;
-      } else {
-        reservation[i].priority = i + 1;
-        continue;
       }
     }
   }
+
+  // Re-prioritise list
+  for (let i = 0; i < reservation.length; i++) {
+    reservation[i].priority = i+1;
+	}
 
   return reservation;
 
