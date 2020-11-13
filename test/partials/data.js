@@ -78,6 +78,17 @@ const customerFour = {
 	table: tableOne,
 };
 
+const customerFiveId = new mongoose.Types.ObjectId();
+const customerFive = {
+	_id: customerFiveId,
+	first_name: "Kanye",
+	last_name: "West",
+	phone: "0809211870",
+	size: 6,
+	staff: staffOne,
+	table: tableOne,
+};
+
 /**
  * Mock Reservations data
  */
@@ -115,6 +126,15 @@ const reservationFour = {
 	size: customerFour.size,
 };
 
+const reservationFiveId = new mongoose.Types.ObjectId();
+const reservationFive = {
+	_id: reservationFiveId,
+	customer: customerFiveId,
+	staff: staffOne,
+	table: tableOne,
+	size: customerFive.size,
+};
+
 /**
  * Mock Reservations data
  */
@@ -122,11 +142,12 @@ const waitlistId = new mongoose.Types.ObjectId();
 const waitlistOne = {
 	_id: waitlistId,
 	table: tableOne,
-  reservation: [
-    { id: reservationTwoId, priority: 1 },
-    { id: reservationThreeId, priority: 2 },
-    { id: reservationFourId, priority: 3 },
-  ],
+	reservation: [
+		{ id: reservationTwoId, priority: 1 },
+		{ id: reservationThreeId, priority: 2 },
+		{ id: reservationFourId, priority: 3 },
+		{ id: reservationFiveId, priority: 4 },
+	],
 };
 
 

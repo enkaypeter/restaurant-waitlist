@@ -1,7 +1,5 @@
 const { Customers, Reservations, Waitlist, Tables } = require("../models");
 
-const { prioritise } = require("../helpers/max_heap.queue");
-
 const makeCustomerReservation = async (payload) => {
   payload.arrival_time = Date.now();
   payload.complete_time = "";
