@@ -87,6 +87,8 @@ const getAllTables = async () => {
   })
 };
 
+
+
 const findTableById = async (tableId) => {
   return await Tables.findById(tableId).exec().catch(err => {
     console.log(err);

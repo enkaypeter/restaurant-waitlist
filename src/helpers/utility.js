@@ -169,11 +169,6 @@ const removeReservation = (waitlistResponse, reservation_id) => {
 
 };
 
-//WIP
-const swap = (arr, current, incoming) => {
-  let temp = current;
-}
-
 
 module.exports = {
 	randomNumberGenerator,

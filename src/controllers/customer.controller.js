@@ -24,9 +24,9 @@ module.exports = {
 			error: "",
 		};
 
-		const { first_name, last_name, phone, size, table, staff } = req.body;
+		const { first_name, last_name, phone, size, staff } = req.body;
+		let { table } = req.body;
 		const bioData = { first_name, last_name, phone, staff };
-
 		const newCustomer = new Customers(bioData);
 
 		const saveResponse = await newCustomer.save().catch((err) => {
@@ -35,20 +35,42 @@ module.exports = {
 		});
 
 		if (saveResponse !== undefined) {
-			const reservationPayload = {
-				customer: saveResponse.id,
-				staff,
-				table,
-				size,
-			};
-
 			try {
+				if (table == undefined) {
+					// Find first available table is no table is specified 
+					const allTables = await getAllTables();
+					const emptyTable = allTables.find(tables => tables.status == "occupied");
+					if (emptyTable == undefined) {
+						for (let i = 0; i < allTables.length; i++){
+							const singleTable = allTables[i].capacity.split("-");
+							const [min, max] = singleTable;
+
+							// Find first table that matches customer's size
+							if (size >= min && size <= max) {
+								table = allTables[i]._id;
+								break;
+							}
+						}
+					} else {
+						table = emptyTable.id;
+					}
+				}
+
+				const reservationPayload = {
+					customer: saveResponse.id,
+					staff,
+					table,
+					size,
+				};
+
 				let reservationResponse = await makeCustomerReservation(
 					reservationPayload
 				);
+
 				let tableResponse = await findTableById(table);
 
 				if (tableResponse.status !== "empty") {
+					console.log("hereee")
 					await addCustomerToWaitlist(reservationResponse);
 				}
 
