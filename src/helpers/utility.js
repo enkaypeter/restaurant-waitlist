@@ -58,10 +58,18 @@ const promoteCustomer = (waitlistResponse, reservation_id) => {
   reservation.splice(indexOf, 1);
 
   // reset old list customer priorities
-  reservation = reservation.map(customer => {
-    customer.priority += 1;
-    return customer;
-  });
+  for (let i = 0; i < reservation.length; i++){
+    reservation[i].priority += 1;
+  }
+
+  for (let i = 0; i < reservation.length; i++){
+    let currentPriority = reservation[i].priority;
+    if (i !== reservation.length - 1) {
+      if (currentPriority + 1 !== reservation[i + 1].priority) {
+        reservation[i + 1].priority = currentPriority + 1;
+      }      
+    }
+  }
 
   // join old list and new list with current customer on top
   newReservation = newReservation.concat(reservation);

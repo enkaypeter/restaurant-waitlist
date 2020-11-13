@@ -70,7 +70,6 @@ module.exports = {
 				let tableResponse = await findTableById(table);
 
 				if (tableResponse.status !== "empty") {
-					console.log("hereee")
 					await addCustomerToWaitlist(reservationResponse);
 				}
 
