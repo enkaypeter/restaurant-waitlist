@@ -106,8 +106,8 @@ const delayCustomer = (waitlistResponse, reservation_id) => {
 };
 
 const demoteCustomer = (waitlistResponse, reservation_id) => {
-  let { reservation } = waitlistResponse[0];
-  
+	let { reservation } = waitlistResponse[0];
+
 	let newReservation = [];
 
 	let indexOf;
@@ -120,27 +120,27 @@ const demoteCustomer = (waitlistResponse, reservation_id) => {
 
 	if (reservation.length == 1) {
 		return reservation; // return reservations as it is if customer is already top of list
-  }
-  
-  if (indexOf == reservation.length - 1) {
-    return reservation;
-  }
+	}
+
+	if (indexOf == reservation.length - 1) {
+		return reservation;
+	}
 
 	//assign customer least priority
 	reservation[indexOf].priority = reservation.length;
 	newReservation[0] = reservation[indexOf];
 
 	// remove current customer from position on the list
-	reservation.splice(indexOf, 1);
-
-	// reset customer priorities
-	reservation = reservation.map((customer) => {
-		customer.priority -= 1;
-		return customer;
-	});
-
+  reservation.splice(indexOf, 1);
+  
 	// join old list and new list with current customer at the rear
-  newReservation = reservation.concat(newReservation);
+	newReservation = reservation.concat(newReservation);
+
+	// Re-prioritise list
+	for (let i = 0; i < newReservation.length; i++) {
+		newReservation[i].priority = i + 1;
+	}
+
 	return newReservation;
 };
 
