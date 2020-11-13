@@ -120,7 +120,11 @@ const demoteCustomer = (waitlistResponse, reservation_id) => {
 
 	if (reservation.length == 1) {
 		return reservation; // return reservations as it is if customer is already top of list
-	}
+  }
+  
+  if (indexOf == reservation.length - 1) {
+    return reservation;
+  }
 
 	//assign customer least priority
 	reservation[indexOf].priority = reservation.length;
